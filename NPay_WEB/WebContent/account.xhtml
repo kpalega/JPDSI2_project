@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:body>
+
+	<ui:composition template="/templates/page-template.xhtml">
+		<ui:define name="pageContent">
+			<p:panel id="account" header="Konto" style="margin-bottom:20px">
+				<center>
+					<h:panelGrid cellpadding="2" columns="2">
+						<form>
+							<div class="p-field p-grid">
+								<p:outputLabel for="name" styleClass="p-col-fixed"
+									style="width:100px" value="Imię" />
+								<div class="p-col">
+									<p:inputText id="name" />
+								</div>
+							</div>
+							<div class="p-field p-grid">
+								<p:outputLabel for="email" styleClass="p-col-fixed"
+									style="width:100px" value="Email" />
+								<div class="p-col">
+									<p:inputText id="email" />
+								</div>
+							</div>
+							<div class="p-field p-grid">
+								<p:outputLabel for="password" styleClass="p-col-fixed"
+									style="width:100px" value="Hasło" />
+								<div class="p-col">
+									<p:inputText id="password" />
+								</div>
+							</div>
+							<p:button value="Zatwierdz" />
+						</form>
+					</h:panelGrid>
+				</center>
+			</p:panel>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+</html>

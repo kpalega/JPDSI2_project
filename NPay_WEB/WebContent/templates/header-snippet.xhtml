@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<h:form>
+		<p:growl id="messages" />
+
+		<p:menubar>
+			<p:menuitem value="Konto" url="#" />
+			<p:submenu label="Grupa">
+				<p:menuitem value="Stwórz" url="#" />
+				<p:menuitem value="Zarządzaj istniejącymi" url="#" />
+			</p:submenu>
+			<p:submenu label="BannedMonths">
+				<p:menuitem value="Dodaj" url="#" />
+			</p:submenu>
+			<p:submenu label="Płatności">
+				<p:menuitem value="Do zapłacenia" url="#" />
+				<p:menuitem value="Historia" url="#" />
+			</p:submenu>
+
+			<f:facet name="options">
+				<p:commandButton type="button" value="Wyloguj" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<p:panel toggleable="true" styleClass="bottom-space"
+		style="text-align:center">
+		<h1>
+			<ui:insert name="title">...</ui:insert>
+		</h1>
+	</p:panel>
+
+</ui:composition>

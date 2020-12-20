@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title><ui:insert name="title">...</ui:insert></title>
+	<h:outputStylesheet name="css/style.css" library="template" />
+	<link type="image/x-icon" rel="shortcut icon"
+		href="#{resource['template:img/icon.ico']}" />
+</h:head>
+<h:body>
+	<div id="page_wrapper">
+	<ui:insert name="header">
+		<div id="header" class="box bottom-space">
+			<ui:include src="/templates/header-snippet.xhtml" />
+		</div>
+	</ui:insert>
+	
+	<div id="content" class="box bottom-space">
+		<ui:insert name="content"></ui:insert>
+	</div>
+	
+	<ui:insert name="footer">
+		<div id="footer" class="box bottom-space">
+			<ui:include src="/templates/footer-snippet.xhtml" />
+		</div>
+	</ui:insert>
+	</div>
+</h:body>
+
+</html>

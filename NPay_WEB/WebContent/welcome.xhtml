@@ -1,15 +1,32 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
-<head>
-	<meta charset="utf-8"/>
-	<title>NPay v.2</title>
-</head> 
-<body>
-Działasz?
-</body>
+
+<h:body>
+
+	<ui:composition template="/templates/page-template.xhtml">
+		<ui:define name="pageContent">
+			<p:panel id="payments" header="Płatności"
+				style="margin-bottom:20px">
+				<h:panelGrid columns="2" cellpadding="10">
+				
+				</h:panelGrid>
+			</p:panel>
+			<p:panel id="groups" header="Grupy"
+				style="margin-bottom:20px">
+				<h:panelGrid columns="2" cellpadding="10">
+					
+				</h:panelGrid>
+			</p:panel>
+			<p:panel id="bmonths" header="Banned Months"
+				style="margin-bottom:20px">
+				<h:panelGrid columns="2" cellpadding="10">
+				</h:panelGrid>
+			</p:panel>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
 </html>
