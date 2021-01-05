@@ -7,6 +7,41 @@
 		<param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
 		<param-value>true</param-value>
 	</context-param>
+
+	<filter>
+		<filter-name>SecurityFilter</filter-name>
+		<filter-class>javax.faces.simplesecurity.SecurityFilter</filter-class>
+		<init-param>
+			<param-name>noPermitionPage</param-name>
+			<param-value>/public/login.jsf</param-value>
+		</init-param>
+		<init-param>
+			<param-name>permissions</param-name>
+			<param-value>
+/javax.faces.resource : PUBLIC;
+/public : PUBLIC;
+/pages/admin : admin;
+/pages/user : user, admin;
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>invalidateOnRemoteAddressChange</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>invalidateOnRemoteHostChange</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>invalidateOnRemotePortChange</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>SecurityFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
 		<param-value>luna-pink</param-value>
@@ -24,7 +59,7 @@
 		<url-pattern>*.jsf</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
-		<welcome-file>account.jsf</welcome-file>
+		<welcome-file>/pages/user/welcome.jsf</welcome-file>
 	</welcome-file-list>
 	<mime-mapping>
 		<extension>ico</extension>

@@ -6,7 +6,6 @@
 
 	<h:form>
 		<p:growl id="messages" />
-
 		<p:menubar>
 			<p:menuitem value="Konto" url="#" />
 			<p:submenu label="Grupa">
@@ -22,7 +21,7 @@
 			</p:submenu>
 
 			<f:facet name="options">
-				<p:commandButton type="button" value="Wyloguj" />
+			<p:commandButton value="Wyloguj" id="logout" action="#{loginBB.doLogout}" style="margin-right:5px;" ajax="false" />
 			</f:facet>
 		</p:menubar>
 	</h:form>

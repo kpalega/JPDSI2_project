@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -37,6 +38,20 @@ public class UserDAO {
 	public User find(Object id) {
 		return em.find(User.class, id);
 	}
+	
+	public User login(String email, String password) {
+		User u = new User();
+		try {
+		u =(User) em.createQuery(
+		   "from User where email = :email and password = :password" )
+		   .setParameter("email", email).setParameter("password", password)
+		   .getSingleResult();
+		}catch(NoResultException e) {
+			u = null;
+		}
+		return u;
+		}
+	
 	
 	public List<User> getFullList(){
 		List<User> list = null;

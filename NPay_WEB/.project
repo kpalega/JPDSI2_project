@@ -3,6 +3,7 @@
 	<name>NPay_WEB</name>
 	<comment></comment>
 	<projects>
+		<project>NPay_EJB</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

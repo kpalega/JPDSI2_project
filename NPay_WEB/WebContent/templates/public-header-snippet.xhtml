@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<h:form style="margin-left:50px; margin-right:50px">
+		<p:growl id="messages" />
+		<p:menubar>
+			<f:facet name="options">
+			<p:commandButton value="Zaloguj" id="login" action="#{loginBB.doLogin}" style="margin-right:5px;" ajax="false" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<p:panel toggleable="true" styleClass="bottom-space"
+		style="text-align:center; margin-left:50px; margin-right:50px">
+		<h1>
+			<ui:insert name="title">...</ui:insert>
+		</h1>
+	</p:panel>
+
+</ui:composition>
