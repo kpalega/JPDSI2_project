@@ -2,8 +2,6 @@ package com.project.login;
 
 
 
-import java.util.HashSet;
-
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -44,7 +42,7 @@ public class LoginBB {
 	
 	@EJB
 	UserDAO userDAO;
-
+	
 	public String doLogin() {
 		FacesContext ctx = FacesContext.getCurrentInstance();
         

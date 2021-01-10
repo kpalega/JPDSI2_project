@@ -4,37 +4,52 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 
-<h:body>
 
+<h:body>
 	<ui:composition template="/templates/page-template.xhtml">
 		<ui:define name="pageContent">
 			<p:panel id="account" header="Konto" style="margin-bottom:20px">
 				<center>
-					<h:panelGrid cellpadding="2" columns="2">
-						<form>
+					<h:panelGrid cellpadding="3" columns="1">
+						<h:form style="text-align:center; display:inline-block">
 							<div class="p-field p-grid">
 								<p:outputLabel for="name" styleClass="p-col-fixed"
 									style="width:100px" value="Imię" />
 								<div class="p-col">
-									<p:inputText id="name" />
+									<p:inputText id="name" value="#{userBB.u.fname}"
+										placeholder="#{remoteClient.details.fname}">
+										<f:validateLength maximum="30" />
+									</p:inputText>
 								</div>
 							</div>
 							<div class="p-field p-grid">
 								<p:outputLabel for="email" styleClass="p-col-fixed"
 									style="width:100px" value="Email" />
 								<div class="p-col">
-									<p:inputText id="email" />
+									<p:inputText id="email" value="#{userBB.u.email}"
+										placeholder="#{remoteClient.details.email}" validatorMessage="Niewłaściwy format email">
+										<f:validateRegex
+											pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+									</p:inputText>
 								</div>
 							</div>
 							<div class="p-field p-grid">
 								<p:outputLabel for="password" styleClass="p-col-fixed"
 									style="width:100px" value="Hasło" />
 								<div class="p-col">
-									<p:inputText id="password" />
+									<p:password id="password" value="#{userBB.u.password}" validatorMessage="Hasło jest za krótkie">
+										<f:validateLength minimum="5" />
+									</p:password>
 								</div>
+								<br />
 							</div>
-							<p:button value="Zatwierdz" />
-						</form>
+							<p:commandButton value="Zmień" id="save"
+								action="#{userBB.changeDatas()}" ajax="true" />
+							<p:messages id="messages" showDetail="false" closable="true">
+								<p:autoUpdate />
+							</p:messages>
+
+						</h:form>
 					</h:panelGrid>
 				</center>
 			</p:panel>
