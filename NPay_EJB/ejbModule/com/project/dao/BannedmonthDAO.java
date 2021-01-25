@@ -4,11 +4,12 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import project.entities.Bannedmonth;
-
+import project.entities.User;
 
 //DAO - Data Access Object for Person entity
 //Designed to serve as an interface between higher layers of application and data.
@@ -37,17 +38,28 @@ public class BannedmonthDAO {
 	public Bannedmonth find(Object id) {
 		return em.find(Bannedmonth.class, id);
 	}
-	
-	public List<Bannedmonth> getFullList(){
+
+	public List<Bannedmonth> getFullList() {
 		List<Bannedmonth> list = null;
-		
+
 		Query query = em.createQuery("select b from Bannedmonth b");
-		
+
 		try {
 			list = query.getResultList();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return list;
+	}
+
+	public Bannedmonth searchByUser(int userID) {
+		Bannedmonth b = new Bannedmonth();
+		try {
+			b = (Bannedmonth) em.createQuery("from Bannedmonth where iduser = :id").setParameter("id", userID)
+					.getSingleResult();
+		} catch (NoResultException e) {
+			b = null;
+		}
+		return b;
 	}
 }

@@ -1,36 +1,48 @@
-package com.project.user;
+package com.project.banmonth;
 
 import java.io.IOException;
 import java.io.Serializable;
 
 import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import javax.faces.simplesecurity.RemoteClient;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
-import com.project.dao.UserDAO;
+import com.project.dao.BannedmonthDAO;
+
+import project.entities.Bannedmonth;
 import project.entities.User;
 
 @Named
-@ViewScoped
-public class UserBB implements Serializable {
+@SessionScoped
+public class BanmonthBB implements Serializable {
 	private static final long serialVersionUID = 1L;
+
 	private static final String PAGE_STAY_AT_THE_SAME = null;
 
-	private User u = new User();
 	private User loaded = null;
+	private Bannedmonth ban = new Bannedmonth();
+	private Bannedmonth newBan = new Bannedmonth();
 
-	public User getU() {
-		return u;
+	public Bannedmonth getNewBan() {
+		return newBan;
 	}
 
-	public void setU(User u) {
-		this.u = u;
+	public void setNewBan(Bannedmonth newBan) {
+		this.newBan = newBan;
+	}
+
+	public Bannedmonth getBan() {
+		return ban;
+	}
+
+	public void setBan(Bannedmonth ban) {
+		this.ban = ban;
 	}
 
 	public User getLoaded() {
@@ -42,28 +54,41 @@ public class UserBB implements Serializable {
 	}
 
 	@EJB
-	UserDAO userDAO;
+	BannedmonthDAO banDAO;
 
 	@Inject
 	FacesContext context;
 
-	public String changeDatas() {
+	public void onLoad() throws IOException {
 		RemoteClient<User> rm = new RemoteClient<User>();
 		HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
 		rm = RemoteClient.load(session);
 		loaded = (User) rm.getDetails();
 		if (loaded != null) {
-			if ((loaded.getFname() != u.getFname()) && !(u.getFname().equals(""))) {
-				loaded.setFname(u.getFname());
+			try {
+				ban = banDAO.searchByUser(loaded.getIduser());
+			} catch (Exception e) {
+				ban = null;
 			}
-			if (loaded.getEmail() != u.getEmail() && !(u.getEmail().equals(""))) {
-				loaded.setEmail(u.getEmail());
+		}
+
+	}
+
+	public String changeDatas() throws IOException {
+		if (ban != null) {
+			if (newBan.getMonth1() != ban.getMonth1() && !(newBan.getMonth1() == "")) {
+				ban.setMonth1(newBan.getMonth1());
 			}
-			if (loaded.getPassword() != u.getPassword() && !(u.getPassword().equals(""))) {
-				loaded.setPassword(u.getPassword());
+			if (newBan.getMonth2() != ban.getMonth2() && !(newBan.getMonth2() == "")) {
+				ban.setMonth2(newBan.getMonth2());
 			}
 			try {
-				userDAO.merge(loaded);
+				if (ban.getMonth1().equals(ban.getMonth2()))
+					ban.setMonth2("");
+			} catch (Exception e) {
+			}
+			try {
+				banDAO.merge(ban);
 				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Poprawnie zmieniono", null));
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -73,6 +98,8 @@ public class UserBB implements Serializable {
 			}
 			return PAGE_STAY_AT_THE_SAME;
 		}
+		context.addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nieprawid³owe wywo³anie systemu.", null));
 		return PAGE_STAY_AT_THE_SAME;
 	}
 }
