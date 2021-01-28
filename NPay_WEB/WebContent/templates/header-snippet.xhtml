@@ -5,11 +5,10 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 	<h:form>
-		<p:growl id="messages" />
 		<p:menubar>
 			<p:menuitem value="Konto" url="account.jsf" />
 			<p:submenu label="Grupa">
-				<p:menuitem value="Stwórz" url="#" />
+				<p:menuitem value="Stwórz" url="groupCreate.jsf" />
 				<p:menuitem value="Zarządzaj istniejącymi" url="#" />
 			</p:submenu>
 			<p:submenu label="BannedMonths">
@@ -21,7 +20,12 @@
 			</p:submenu>
 
 			<f:facet name="options">
-			<p:commandButton value="Wyloguj" id="logout" action="#{loginBB.doLogout}" style="margin-right:5px;" ajax="false" />
+
+				<h:outputText value="Witaj #{remoteClient.details.fname}!"
+					style="margin-right : 40px; font-size: 20px ; color: #CC285C; font-weight: bold" />
+
+				<p:commandButton value="Wyloguj" id="logout"
+					action="#{loginBB.doLogout}" style="margin-right:5px;" ajax="false" />
 			</f:facet>
 		</p:menubar>
 	</h:form>

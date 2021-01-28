@@ -1,0 +1,92 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+	<f:viewAction action="#{groupBB.onLoad()}" />
+</f:metadata>
+
+<h:body>
+	<ui:composition template="/templates/page-template.xhtml">
+		<ui:define name="pageContent">
+			<p:panel id="groupCreate" header="Stwórz grupę"
+				style="margin-bottom:20px">
+				<center>
+					<br />
+					<h:form style="text-align:center; display:inline-block">
+						<h:panelGrid cellpadding="3" columns="8"
+							style="text-align:center; display:inline-block">
+							<div class="p-grid">
+
+								<div class="p-col-12 p-md-6 p-lg-3">
+									<p:outputLabel for="name" value="Nazwa: " />
+									<p:inputText id="name" value="#{groupBB.group.name}"
+									required="true" requiredMessage="Podaj nazwę grupy."
+										style="width:450px" />
+								</div>
+								<br />
+								<div class="p-col-12 p-md-6 p-lg-3">
+									<p:selectOneRadio id="mediaservice"
+										value="#{groupBB.media.service}" unselectable="true" required="true" requiredMessage="Podaj usługę streamingową.">
+										<f:selectItem itemLabel="Netflix" itemValue="Netflix" />
+										<f:selectItem itemLabel="HBO GO" itemValue="HBOGO" />
+										<f:selectItem itemLabel="Amazon Prime"
+											itemValue="AmazonPrime" />
+									</p:selectOneRadio>
+								</div>
+								<br />
+								<div class="p-col-12 p-md-6 p-lg-3">
+									<p:outputLabel for="prize" value="Cena: " />
+									<p:inputNumber id="prize" value="#{groupBB.media.prize}"
+										symbol=" PLN" symbolPosition="s" decimalSeparator=","
+										thousandSeparator="." minValue="0"  required="true" requiredMessage="Podaj cenę."/>
+								</div>
+								<br />
+							</div>
+						</h:panelGrid>
+						<p:dataTable id="tbl" var="users" value="#{groupBB.users}"
+							selection="#{groupBB.selectedUsers}"
+							rowKey="#{users.iduser}" selectionPageOnly="false"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+							paginator="true" rows="10" styleClass="p-mt-2">
+
+
+							<p:column sortBy="#{users.fname}">
+								<f:facet name="header">
+									<h:outputText value="Imię" />
+								</f:facet>
+								<h:outputText value="#{users.fname}" />
+							</p:column>
+
+							<p:column sortBy="#{users.email}">
+								<f:facet name="header">
+									<h:outputText value="Email" />
+								</f:facet>
+								<h:outputText value="#{users.email}" />
+							</p:column>
+
+							<p:column selectionMode="multiple"
+								style="width:200px;text-align:center" >
+								<f:facet name="header">
+									<h:outputText value="Dodaj do grupy" />
+								</f:facet>
+								</p:column>
+						</p:dataTable>
+						<br />
+
+						<p:commandButton value="Stwórz" id="save"
+							action="#{groupBB.saveDatas()}" ajax="true" />
+						<p:messages id="messages" showDetail="false" closable="true">
+							<p:autoUpdate />
+						</p:messages>
+					</h:form>
+
+				</center>
+			</p:panel>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+</html>

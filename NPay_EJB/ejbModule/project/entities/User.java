@@ -36,7 +36,7 @@ public class User implements Serializable {
 	private List<Payment> payments;
 
 	//bi-directional many-to-many association to Team
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 		name="user_has_team"
 		, joinColumns={

@@ -4,11 +4,12 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import project.entities.Bannedmonth;
 import project.entities.Mediaservice;
-
 
 //DAO - Data Access Object for Person entity
 //Designed to serve as an interface between higher layers of application and data.
@@ -38,14 +39,26 @@ public class MediaserviceDAO {
 		return em.find(Mediaservice.class, id);
 	}
 
-	public List<Mediaservice> getFullList(){
+	public Mediaservice searchLastAdded() {
+		Mediaservice last  = new Mediaservice();
+		Query query = em.createQuery("select m from Mediaservice m order by idmediaservice DESC");
+		query.setMaxResults(1);
+		try {
+			last = (Mediaservice) query.getSingleResult();
+		} catch (NoResultException e) {
+			last = null;
+		}
+		return last;
+	}
+
+	public List<Mediaservice> getFullList() {
 		List<Mediaservice> list = null;
-		
+
 		Query query = em.createQuery("select m from Mediaservice m");
-		
+
 		try {
 			list = query.getResultList();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return list;

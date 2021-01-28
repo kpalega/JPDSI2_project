@@ -4,9 +4,11 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import project.entities.Mediaservice;
 import project.entities.Team;
 
 
@@ -48,5 +50,16 @@ public class TeamDAO {
 			e.printStackTrace();
 		}
 		return list;
+	}
+	public Team searchLastAdded() {
+		Team last  = new Team();
+		Query query = em.createQuery("select t from Team t order by idteam DESC");
+		query.setMaxResults(1);
+		try {
+			last = (Team) query.getSingleResult();
+		} catch (NoResultException e) {
+			last = null;
+		}
+		return last;
 	}
 }

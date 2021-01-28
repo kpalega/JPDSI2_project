@@ -53,13 +53,13 @@ public class BannedmonthDAO {
 	}
 
 	public Bannedmonth searchByUser(int userID) {
-		Bannedmonth b = new Bannedmonth();
+		Bannedmonth ban = new Bannedmonth();
 		try {
-			b = (Bannedmonth) em.createQuery("from Bannedmonth where iduser = :id").setParameter("id", userID)
+			ban = (Bannedmonth) em.createQuery("from Bannedmonth where iduser = :id").setParameter("id", userID)
 					.getSingleResult();
 		} catch (NoResultException e) {
-			b = null;
+			ban = null;
 		}
-		return b;
+		return ban;
 	}
 }

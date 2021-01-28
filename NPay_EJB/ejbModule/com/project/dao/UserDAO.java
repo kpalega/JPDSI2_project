@@ -56,7 +56,7 @@ public class UserDAO {
 	public List<User> getFullList(){
 		List<User> list = null;
 		
-		Query query = em.createQuery("select u from User u");
+		Query query = em.createQuery("select u from User u order by fname");
 		
 		try {
 			list = query.getResultList();

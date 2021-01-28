@@ -2,6 +2,7 @@ package com.project.user;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -46,7 +47,7 @@ public class UserBB implements Serializable {
 
 	@Inject
 	FacesContext context;
-
+	
 	public String changeDatas() {
 		RemoteClient<User> rm = new RemoteClient<User>();
 		HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
@@ -75,4 +76,5 @@ public class UserBB implements Serializable {
 		}
 		return PAGE_STAY_AT_THE_SAME;
 	}
+	
 }

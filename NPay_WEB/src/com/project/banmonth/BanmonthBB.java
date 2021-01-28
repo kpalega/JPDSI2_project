@@ -90,16 +90,26 @@ public class BanmonthBB implements Serializable {
 			try {
 				banDAO.merge(ban);
 				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Poprawnie zmieniono", null));
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				context.addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Wyst¹pi³ b³¹d podczas zapisu", null));
 				return PAGE_STAY_AT_THE_SAME;
 			}
-			return PAGE_STAY_AT_THE_SAME;
+		} else {
+			try {
+				newBan.setUser(loaded);
+				banDAO.create(newBan);
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Poprawnie zmieniono", null));
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				context.addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Wyst¹pi³ b³¹d podczas zapisu", null));
+			}
 		}
-		context.addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nieprawid³owe wywo³anie systemu.", null));
+		onLoad();
 		return PAGE_STAY_AT_THE_SAME;
 	}
 }
