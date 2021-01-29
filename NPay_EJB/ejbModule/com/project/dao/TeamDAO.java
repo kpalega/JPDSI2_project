@@ -10,7 +10,7 @@ import javax.persistence.Query;
 
 import project.entities.Mediaservice;
 import project.entities.Team;
-
+import project.entities.User;
 
 //DAO - Data Access Object for Person entity
 //Designed to serve as an interface between higher layers of application and data.
@@ -39,20 +39,22 @@ public class TeamDAO {
 	public Team find(Object id) {
 		return em.find(Team.class, id);
 	}
-	public List<Team> getFullList(){
+
+	public List<Team> getFullList() {
 		List<Team> list = null;
-		
+
 		Query query = em.createQuery("select t from Team t");
-		
+
 		try {
 			list = query.getResultList();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return list;
 	}
+
 	public Team searchLastAdded() {
-		Team last  = new Team();
+		Team last = new Team();
 		Query query = em.createQuery("select t from Team t order by idteam DESC");
 		query.setMaxResults(1);
 		try {
@@ -62,4 +64,5 @@ public class TeamDAO {
 		}
 		return last;
 	}
+
 }

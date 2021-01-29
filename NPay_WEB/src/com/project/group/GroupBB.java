@@ -3,6 +3,8 @@ package com.project.group;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,7 +38,8 @@ public class GroupBB implements Serializable {
 	private Team group = new Team();
 	private Mediaservice media = new Mediaservice();
 	private User loaded = null;
-	private List<User> users = null;
+	private List<Team> userGroups = new ArrayList<Team>();
+	private List<User> users = new ArrayList<User>();
 	private List<User> selectedUsers = new ArrayList<User>();
 
 	@EJB
@@ -50,7 +53,20 @@ public class GroupBB implements Serializable {
 	FacesContext context;
 
 	public void onLoad() {
-		this.setUsers(userDAO.getFullList());
+		RemoteClient<User> rm = new RemoteClient<User>();
+		HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+		rm = RemoteClient.load(session);
+		loaded = (User) rm.getDetails();
+		users = userDAO.getFullList();
+		Iterator<User> i = users.iterator();
+		while (i.hasNext()) {
+			User u = i.next();
+			if (u.getIduser() == loaded.getIduser()) {
+				i.remove();
+			}
+		}
+		setUsers(users);
+		userGroups = loaded.getTeams();
 	}
 
 	public String saveDatas() {
@@ -58,16 +74,17 @@ public class GroupBB implements Serializable {
 			mediaDAO.create(this.media);
 			Mediaservice lastM = new Mediaservice();
 			lastM = mediaDAO.searchLastAdded();
-		    group.setMediaservice(lastM);
-		    group.setUsers(selectedUsers);
+			group.setMediaservice(lastM);
+			group.setUsers(selectedUsers);
 			teamDAO.create(group);
 			Team lastT = new Team();
 			lastT = teamDAO.searchLastAdded();
-		    for(User x:selectedUsers) {
+			for (User x : selectedUsers) {
 				x.getTeams().add(lastT);
 				userDAO.merge(x);
 			}
-		    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Pomyœlnie dodano grupê", null));
+			loaded.getTeams().add(lastT);
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Pomyœlnie dodano grupê", null));
 		} catch (Exception e) {
 			e.printStackTrace();
 			context.addMessage(null,
@@ -116,6 +133,14 @@ public class GroupBB implements Serializable {
 
 	public void setSelectedUsers(List<User> selectedUsers) {
 		this.selectedUsers = selectedUsers;
+	}
+
+	public List<Team> getUserGroups() {
+		return userGroups;
+	}
+
+	public void setUserGroups(List<Team> userGroups) {
+		this.userGroups = userGroups;
 	}
 
 }

@@ -8,8 +8,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import project.entities.Team;
 import project.entities.User;
-
 
 //DAO - Data Access Object for Person entity
 //Designed to serve as an interface between higher layers of application and data.
@@ -38,29 +38,26 @@ public class UserDAO {
 	public User find(Object id) {
 		return em.find(User.class, id);
 	}
-	
+
 	public User login(String email, String password) {
 		User u = new User();
 		try {
-		u =(User) em.createQuery(
-		   "from User where email = :email and password = :password" )
-		   .setParameter("email", email).setParameter("password", password)
-		   .getSingleResult();
-		}catch(NoResultException e) {
+			u = (User) em.createQuery("from User where email = :email and password = :password")
+					.setParameter("email", email).setParameter("password", password).getSingleResult();
+		} catch (NoResultException e) {
 			u = null;
 		}
 		return u;
-		}
-	
-	
-	public List<User> getFullList(){
+	}
+
+	public List<User> getFullList() {
 		List<User> list = null;
-		
+
 		Query query = em.createQuery("select u from User u order by fname");
-		
+
 		try {
 			list = query.getResultList();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return list;

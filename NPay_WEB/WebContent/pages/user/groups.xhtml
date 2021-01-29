@@ -11,51 +11,60 @@
 <h:body>
 	<ui:composition template="/templates/page-template.xhtml">
 		<ui:define name="pageContent">
-			<p:panel id="groupCreate" header="Grupy do których należysz"
+			<p:panel id="groups" header="Grupy do których należysz"
 				style="margin-bottom:20px">
 				<center>
 					<br />
 
-						<p:dataTable id="tbl" var="users" value="#{groupBB.users}"
-							selection="#{groupBB.selectedUsers}"
-							rowKey="#{users.iduser}" selectionPageOnly="false"
-							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-							paginator="true" rows="10" styleClass="p-mt-2">
+					<p:dataTable id="tbl" var="groups" value="#{groupBB.userGroups}"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+						paginator="true" rows="10" styleClass="p-mt-2">
 
+						<p:column sortBy="#{groups.name}">
+							<f:facet name="header">
+								<h:outputText value="Nazwa" />
+							</f:facet>
+							<h:outputText value="#{groups.name}" />
+						</p:column>
 
-							<p:column sortBy="#{users.fname}">
-								<f:facet name="header">
-									<h:outputText value="Nazwa" />
-								</f:facet>
-								<h:outputText value="#{users.fname}" />
-							</p:column>
+						<p:column sortBy="#{groups.getMediaservice().service}">
+							<f:facet name="header">
+								<h:outputText value="Serwis" />
+							</f:facet>
+							<h:outputText value="#{groups.getMediaservice().service}" />
+						</p:column>
 
-							<p:column sortBy="#{users.email}">
-								<f:facet name="header">
-									<h:outputText value="Serwis" />
-								</f:facet>
-								<h:outputText value="#{users.email}" />
-							</p:column>
+						<p:column sortBy="#{groups.getMediaservice().prize}">
+							<f:facet name="header">
+								<h:outputText value="Cena" />
+							</f:facet>
+							<h:outputText value="#{groups.getMediaservice().prize}" />
+						</p:column>
+
+						<p:column style="width:25rem;text-align: center">
+							<f:facet name="header">
+								<h:outputText value="Działania" />
+							</f:facet>
+							<p:linkButton outcome="groups" value="Zmień"
+								icon="pi pi-cog" style="margin-right:10px" >
+								<f:param name="idTeam" value="#{groups.getIdteam()}" />
+							</p:linkButton>
 							
-							<p:column sortBy="#{users.email}">
-								<f:facet name="header">
-									<h:outputText value="Cena" />
-								</f:facet>
-								<h:outputText value="#{users.email}" />
-							</p:column>
+							<p:linkButton outcome="groups" value="Dodaj płatność"
+								icon="pi pi-plus" style="margin-right:10px">
+								<f:param name="idTeam" value="#{groups.getIdteam()}" />
+							</p:linkButton>
+							<p:linkButton outcome="groups" value="Usuń"
+								icon="pi pi-trash">
+								<f:param name="idTeam" value="#{groups.getIdteam()}" />
+							</p:linkButton>
+						</p:column>
+					</p:dataTable>
+					<br />
 
-							<p:column selectionMode="multiple"
-								style="width:200px;text-align:center" >
-								<f:facet name="header">
-									<h:outputText value="Dodaj do grupy" />
-								</f:facet>
-								</p:column>
-						</p:dataTable>
-						<br />
-
-						<p:messages id="messages" showDetail="false" closable="true">
-							<p:autoUpdate />
-						</p:messages>
+					<p:messages id="messages" showDetail="false" closable="true">
+						<p:autoUpdate />
+					</p:messages>
 
 				</center>
 			</p:panel>
