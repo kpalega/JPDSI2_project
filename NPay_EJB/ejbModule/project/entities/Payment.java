@@ -25,7 +25,7 @@ public class Payment implements Serializable {
 	private Team team;
 
 	//bi-directional many-to-one association to User
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="iduser")
 	private User user;
 

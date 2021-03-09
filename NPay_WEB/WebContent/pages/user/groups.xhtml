@@ -15,53 +15,107 @@
 				style="margin-bottom:20px">
 				<center>
 					<br />
+					<h:form id="form" style="text-align:center; display:inline-block">
 
-					<p:dataTable id="tbl" var="groups" value="#{groupBB.userGroups}"
-						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-						paginator="true" rows="10" styleClass="p-mt-2">
+						<p:dataTable id="tbl" var="group" value="#{groupBB.userGroups}"
+							selectionMode="single" selection="#{groupBB.selectedTeam}"
+							editable="true" rowKey="#{group.idteam}"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+							paginator="true" rows="10" styleClass="p-mt-2">
+							<p:ajax event="rowEdit" listener="#{groupBB.onRowEdit}"
+								update="messages" />
+							<p:ajax event="rowEditCancel" listener="#{groupBB.onRowCancel}"
+								update="messages" />
 
-						<p:column sortBy="#{groups.name}">
-							<f:facet name="header">
-								<h:outputText value="Nazwa" />
+							<p:column headerText="Nazwa">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{group.name}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText id="modelInput" value="#{group.name}"
+											style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Serwis" />
+								</f:facet>
+								<h:outputText value="#{group.getMediaservice().service}" />
+							</p:column>
+
+							<p:column headerText="Cena">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{group.getMediaservice().prize}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText id="prizeInput"
+											value="#{group.getMediaservice().prize}" style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column style="width:6rem">
+								<p:rowEditor editTitle="Zedytuj grupę"
+									cancelTitle="Odrzuć edycję" saveTitle="Zapisz" />
+							</p:column>
+							<f:facet name="footer">
+								<p:commandButton update=":form:payment" process="tbl"
+									oncomplete="PF('addPayment').show()" style="margin-right:20px"
+									icon="pi pi-plus" value="Dodaj płatność w wybranej grupie" />
 							</f:facet>
-							<h:outputText value="#{groups.name}" />
-						</p:column>
+						</p:dataTable>
+						<br />
+						<p:dialog header="Dodaj płatność" widgetVar="addPayment"
+							modal="true" showEffect="fade" hideEffect="fade"
+							resizable="false" >
 
-						<p:column sortBy="#{groups.getMediaservice().service}">
-							<f:facet name="header">
-								<h:outputText value="Serwis" />
-							</f:facet>
-							<h:outputText value="#{groups.getMediaservice().service}" />
-						</p:column>
+							<p:outputPanel id="payment" style="text-align:center; display:inline-block">
+								<p:column rendered="#{not empty groupBB.selectedTeam}">
+									<p:panelGrid columns="2">
+										<h:outputText style="font-weight: bold" value="Grupa:" />
+										<h:outputText value="#{groupBB.selectedTeam.name}" />
+										<h:outputText style="font-weight: bold" value="Cena:" />
+										<h:outputText
+											value="#{groupBB.selectedTeam.getMediaservice().getPrize()}" />
+										<h:outputText for="@next" style="font-weight: bold"
+											value="Wybierz osobę do zapłaty:" />
+										<p:selectOneMenu value="#{groupBB.userIDforPayment}">
+											<f:selectItems value="#{groupBB.getStringList()}" />
+										</p:selectOneMenu>
+										<h:outputText for="@next" style="font-weight: bold"
+											value="Wybierz miesiąc do zapłaty:" />
+										<p:selectOneMenu id="month" value="#{groupBB.month}"
+											style="width:115px">
+											<f:selectItem itemLabel="-Wybierz-" itemValue="" />
+											<f:selectItem itemLabel="Styczeń" itemValue="Styczeń" />
+											<f:selectItem itemLabel="Luty" itemValue="Luty" />
+											<f:selectItem itemLabel="Marzec" itemValue="Marzec" />
+											<f:selectItem itemLabel="Kwiecień" itemValue="Kwiecień" />
+											<f:selectItem itemLabel="Maj" itemValue="Maj" />
+											<f:selectItem itemLabel="Czerwiec" itemValue="Czerwiec" />
+											<f:selectItem itemLabel="Lipiec" itemValue="Lipiec" />
+											<f:selectItem itemLabel="Sierpień" itemValue="Sierpień" />
+											<f:selectItem itemLabel="Wrzesień" itemValue="Wrzesień" />
+											<f:selectItem itemLabel="Październik" itemValue="Październik" />
+											<f:selectItem itemLabel="Listopad" itemValue="Listopad" />
+											<f:selectItem itemLabel="Grudzień" itemValue="Grudzień" />
+										</p:selectOneMenu>
+									</p:panelGrid>
+									<br />
+									<p:commandButton value="Dodaj płatność" icon="pi pi-plus"
+										action="#{groupBB.addPayment()}">
+									</p:commandButton>
+								</p:column>
+								<p:messages id="messagesDialog" showDetail="false" closable="true">
+									<p:autoUpdate />
+								</p:messages>
+							</p:outputPanel>
 
-						<p:column sortBy="#{groups.getMediaservice().prize}">
-							<f:facet name="header">
-								<h:outputText value="Cena" />
-							</f:facet>
-							<h:outputText value="#{groups.getMediaservice().prize}" />
-						</p:column>
-
-						<p:column style="width:25rem;text-align: center">
-							<f:facet name="header">
-								<h:outputText value="Działania" />
-							</f:facet>
-							<p:linkButton outcome="groups" value="Zmień"
-								icon="pi pi-cog" style="margin-right:10px" >
-								<f:param name="idTeam" value="#{groups.getIdteam()}" />
-							</p:linkButton>
-							
-							<p:linkButton outcome="groups" value="Dodaj płatność"
-								icon="pi pi-plus" style="margin-right:10px">
-								<f:param name="idTeam" value="#{groups.getIdteam()}" />
-							</p:linkButton>
-							<p:linkButton outcome="groups" value="Usuń"
-								icon="pi pi-trash">
-								<f:param name="idTeam" value="#{groups.getIdteam()}" />
-							</p:linkButton>
-						</p:column>
-					</p:dataTable>
-					<br />
-
+						</p:dialog>
+					</h:form>
 					<p:messages id="messages" showDetail="false" closable="true">
 						<p:autoUpdate />
 					</p:messages>

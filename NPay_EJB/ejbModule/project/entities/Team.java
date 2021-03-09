@@ -2,7 +2,10 @@ package project.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -26,7 +29,7 @@ public class Team implements Serializable {
 
 	//bi-directional many-to-one association to Mediaservice
 	@ManyToOne
-	@JoinColumn(name="idmediaservice")
+	@JoinColumn(name="idmediaservice" )
 	private Mediaservice mediaservice;
 
 	//bi-directional many-to-many association to User
@@ -36,6 +39,16 @@ public class Team implements Serializable {
 	public Team() {
 	}
 
+	public void removeUser(User user) {
+		this.users.remove(user);
+		user.getTeams().remove(this);
+	}
+	
+	public void addUser(User user) {
+		this.users.add(user);
+		user.getTeams().add(this);
+	}
+	
 	public int getIdteam() {
 		return this.idteam;
 	}

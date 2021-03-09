@@ -4,9 +4,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 
-<f:metadata>
-	<f:viewAction action="#{groupBB.onLoad()}" />
-</f:metadata>
+
 
 <h:body>
 	<ui:composition template="/templates/page-template.xhtml">
@@ -29,7 +27,7 @@
 								<br />
 								<div class="p-col-12 p-md-6 p-lg-3">
 									<p:selectOneRadio id="mediaservice"
-										value="#{groupBB.media.service}" unselectable="true" required="true" requiredMessage="Podaj usługę streamingową.">
+										value="#{groupBB.media.service}" unselectable="false" required="true" requiredMessage="Podaj usługę streamingową.">
 										<f:selectItem itemLabel="Netflix" itemValue="Netflix" />
 										<f:selectItem itemLabel="HBO GO" itemValue="HBOGO" />
 										<f:selectItem itemLabel="Amazon Prime"
@@ -46,21 +44,21 @@
 								<br />
 							</div>
 						</h:panelGrid>
-						<p:dataTable id="tbl" var="users" value="#{groupBB.users}"
-							selection="#{groupBB.selectedUsers}"
+						<p:dataTable id="tbl" var="users" value="#{groupBB.lazyUserModel}" lazy="true"
+							selection="#{groupBB.selectedUsers}" 
 							rowKey="#{users.iduser}" selectionPageOnly="false"
 							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
 							paginator="true" rows="10" styleClass="p-mt-2">
 
 
-							<p:column sortBy="#{users.fname}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Imię" />
 								</f:facet>
 								<h:outputText value="#{users.fname}" />
 							</p:column>
 
-							<p:column sortBy="#{users.email}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Email" />
 								</f:facet>

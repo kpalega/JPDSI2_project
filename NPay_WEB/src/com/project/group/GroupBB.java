@@ -1,14 +1,13 @@
 package com.project.group;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -18,12 +17,21 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
+import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.LazyDataModel;
+
+import com.project.dao.BannedmonthDAO;
 import com.project.dao.MediaserviceDAO;
+import com.project.dao.PaymentDAO;
 import com.project.dao.TeamDAO;
 import com.project.dao.UserDAO;
+import com.project.welcome.LazyPaymentDataModel;
 
+import project.entities.Bannedmonth;
 import project.entities.Mediaservice;
+import project.entities.Payment;
 import project.entities.Team;
 import project.entities.User;
 
@@ -34,38 +42,45 @@ public class GroupBB implements Serializable {
 
 	private static final String PAGE_MAIN = "/pages/user/groups?faces-redirect=true";
 	private static final String PAGE_STAY_AT_THE_SAME = null;
+	private static final String PAGE_EDIT = "/pages/user/groupEdit?faces-redirect=true";
 
 	private Team group = new Team();
 	private Mediaservice media = new Mediaservice();
 	private User loaded = null;
 	private List<Team> userGroups = new ArrayList<Team>();
-	private List<User> users = new ArrayList<User>();
 	private List<User> selectedUsers = new ArrayList<User>();
+	private Team selectedTeam;
+	private LazyDataModel<User> lazyUserModel;
+	private int userIDforPayment;
+	private String month;
+	private Payment payment = new Payment();
 
+	@EJB
+	PaymentDAO payDAO;
 	@EJB
 	UserDAO userDAO;
 	@EJB
 	TeamDAO teamDAO;
 	@EJB
 	MediaserviceDAO mediaDAO;
+	@EJB
+	BannedmonthDAO banDAO;
 
 	@Inject
 	FacesContext context;
 
-	public void onLoad() {
-		RemoteClient<User> rm = new RemoteClient<User>();
+	@PostConstruct
+    public void init() {
+        lazyUserModel = new LazyUserDataModel();
+        ((LazyUserDataModel) lazyUserModel).setUserDAO(userDAO);
+        RemoteClient<User> rm = new RemoteClient<User>();
 		HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
 		rm = RemoteClient.load(session);
 		loaded = (User) rm.getDetails();
-		users = userDAO.getFullList();
-		Iterator<User> i = users.iterator();
-		while (i.hasNext()) {
-			User u = i.next();
-			if (u.getIduser() == loaded.getIduser()) {
-				i.remove();
-			}
-		}
-		setUsers(users);
+        ((LazyUserDataModel) lazyUserModel).setUserID(loaded.getIduser());
+        }
+	
+	public void onLoad() {
 		userGroups = loaded.getTeams();
 	}
 
@@ -95,6 +110,65 @@ public class GroupBB implements Serializable {
 		return PAGE_MAIN;
 	}
 
+	public void onRowEdit(RowEditEvent<Team> event) {
+		try {
+			Team t = teamDAO.find(event.getObject().getIdteam());
+			t.setName(event.getObject().getName());
+			Mediaservice m = t.getMediaservice();
+			m.setPrize(event.getObject().getMediaservice().getPrize());
+			m.setService(event.getObject().getMediaservice().getService());
+			mediaDAO.merge(m);
+			t.setMediaservice(m);
+			teamDAO.merge(t);
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Zapisano", null));
+		} catch (Exception e) {
+			e.printStackTrace();
+			context.addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Wyst¹pi³ b³¹d podczas zapisu", null));
+		}
+	}
+
+	public void onRowCancel(RowEditEvent<Team> event) {
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Odrzucono", null));
+	}
+
+	public Map<String, Integer> getStringList() {
+		List<User> user = teamDAO.getUserList(selectedTeam);
+		Map<String, Integer> userName = new LinkedHashMap<String, Integer>();
+		for (User u : user) {
+			userName.put(u.getFname(), u.getIduser());
+		}
+		return userName;
+	}
+
+	public void addPayment() {
+		if (selectedTeam == null) {
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "B³êdne wywo³anie.", null));
+		} else {
+			try {
+
+				User user = userDAO.find(userIDforPayment);
+				Bannedmonth ban = banDAO.searchByUser(userIDforPayment);
+				if((ban.getMonth1().contains(month)) || (ban.getMonth2().contains(month))) {
+					context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+							"Ten miesi¹c nie mo¿e zostaæ przypisany dla tego u¿ytkownika", null));
+				} else {
+					payment.setMonth(month);
+					payment.setUser(user);
+					payment.setTeam(selectedTeam);
+					payDAO.create(payment);
+					payment.setIdpayment(0);
+					context.addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO, "Pomyœlnie dodano p³atnoœæ.", null));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				context.addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Wyst¹pi³ b³¹d podczas zapisu", null));
+			}
+		}
+	}
+
 	public Mediaservice getMedia() {
 		return media;
 	}
@@ -119,14 +193,6 @@ public class GroupBB implements Serializable {
 		this.loaded = loaded;
 	}
 
-	public List<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
 	public List<User> getSelectedUsers() {
 		return selectedUsers;
 	}
@@ -141,6 +207,46 @@ public class GroupBB implements Serializable {
 
 	public void setUserGroups(List<Team> userGroups) {
 		this.userGroups = userGroups;
+	}
+
+	public Team getSelectedTeam() {
+		return selectedTeam;
+	}
+
+	public void setSelectedTeam(Team selectedTeam) {
+		this.selectedTeam = selectedTeam;
+	}
+
+	public LazyDataModel<User> getLazyUserModel() {
+		return lazyUserModel;
+	}
+
+	public void setLazyUserModel(LazyDataModel<User> lazyUserModel) {
+		this.lazyUserModel = lazyUserModel;
+	}
+
+	public int getUserIDforPayment() {
+		return userIDforPayment;
+	}
+
+	public void setUserIDforPayment(int userIDforPayment) {
+		this.userIDforPayment = userIDforPayment;
+	}
+
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
 	}
 
 }

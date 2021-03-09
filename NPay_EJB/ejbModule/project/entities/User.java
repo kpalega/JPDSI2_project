@@ -2,7 +2,10 @@ package project.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -36,7 +39,7 @@ public class User implements Serializable {
 	private List<Payment> payments;
 
 	//bi-directional many-to-many association to Team
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
 	@JoinTable(
 		name="user_has_team"
 		, joinColumns={
@@ -51,6 +54,16 @@ public class User implements Serializable {
 	public User() {
 	}
 
+	public void removeTeam(Team team) {
+		this.teams.remove(team);
+		team.getUsers().remove(this);
+	}
+	
+	public void addTeam(Team team) {
+		this.teams.add(team);
+		team.getUsers().add(this);
+	}
+	
 	public int getIduser() {
 		return this.iduser;
 	}

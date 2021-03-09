@@ -39,6 +39,12 @@ public class TeamDAO {
 	public Team find(Object id) {
 		return em.find(Team.class, id);
 	}
+	
+	public List<User> getUserList(Team team){
+		Team t = em.find(Team.class, team.getIdteam());
+		t.getUsers().size();
+		return t.getUsers();
+	}
 
 	public List<Team> getFullList() {
 		List<Team> list = null;

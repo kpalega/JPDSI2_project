@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/templates/page-template.xhtml">
+		<ui:define name="pageContent">
+			<p:panel id="payments" header="Płatności" style="margin-bottom:20px">
+				<h:panelGrid columns="2" cellpadding="10">
+					<p:dataTable id="tbl" var="payment" value="#{welcomeBB.lazyPaymentModel}" lazy="true"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+						paginator="true" rows="10" styleClass="p-mt-2" style='text-align:center; display:inline-block'>
+						<p:column headerText="Grupa">
+							<h:outputText value="#{payment.getTeam().name}" />
+						</p:column>
+
+						<p:column headerText="Miesiąc">
+							<h:outputText value="#{payment.month}" />
+						</p:column>
+
+						<p:column headerText="Cena">
+							<h:outputText value="#{payment.getTeam().getMediaservice().prize}" />
+						</p:column>
+					</p:dataTable>
+				</h:panelGrid>
+			</p:panel>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+</html>
